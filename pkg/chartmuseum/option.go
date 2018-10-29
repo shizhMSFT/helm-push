@@ -2,6 +2,8 @@ package chartmuseum
 
 import (
 	"time"
+
+	"github.com/chartmuseum/helm-push/pkg/api"
 )
 
 type (
@@ -21,6 +23,7 @@ type (
 		certFile           string
 		keyFile            string
 		insecureSkipVerify bool
+		api                api.Server
 	}
 )
 
@@ -98,5 +101,17 @@ func KeyFile(keyFile string) Option {
 func InsecureSkipVerify(insecureSkipVerify bool) Option {
 	return func(opts *options) {
 		opts.insecureSkipVerify = insecureSkipVerify
+	}
+}
+
+// APISpecType specifies the server APIs
+func APISpecType(apiSpecType string) Option {
+	return func(opts *options) {
+		switch apiSpecType {
+		case "azurecr":
+			opts.api = api.AzureContainerRegistry{}
+		default:
+			opts.api = api.ChartMuseum{}
+		}
 	}
 }
